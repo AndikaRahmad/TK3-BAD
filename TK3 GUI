@@ -1,0 +1,90 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class TK3FunProgrammingGUI extends JFrame {
+
+    private JLabel label;
+
+    public TK3FunProgrammingGUI() {
+        setTitle("Fun Programming");
+        label = new JLabel("Programming is fun", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 25));
+
+        String[] colors = {"Red", "Yellow", "Black", "Orange", "Green"};
+        ButtonGroup buttonGroup = new ButtonGroup();
+        JPanel radioPanel = new JPanel();
+
+        for (String color : colors) {
+            JRadioButton radioButton = new JRadioButton(color);
+            radioButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    label.setForeground(Color.decode(getColorHex(color)));
+                }
+            });
+            buttonGroup.add(radioButton);
+            radioPanel.add(radioButton);
+        }
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        buttonPanel.add(createMoveButton("<=", e -> moveTextToLeft()));
+        buttonPanel.add(createMoveButton("=>", e -> moveTextToRight()));
+
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.add(label, new GridBagConstraints());
+
+        setLayout(new BorderLayout());
+        add(radioPanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        setLookAndFeel();
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private JButton createMoveButton(String text, ActionListener action) {
+        JButton button = new JButton(text);
+        button.addActionListener(action);
+        button.setFocusPainted(false);
+        return button;
+    }
+
+    private void moveTextToLeft() {
+        Point location = label.getLocation();
+        if (location.x > 0) label.setLocation(location.x - 5, location.y);
+    }
+
+    private void moveTextToRight() {
+        Point location = label.getLocation();
+        if (location.x + label.getWidth() < getWidth()) label.setLocation(location.x + 5, location.y);
+    }
+
+    private String getColorHex(String colorName) {
+        switch (colorName.toLowerCase()) {
+            case "red": return "#FF0000";
+            case "yellow": return "#FFFF00";
+            case "black": return "#000000";
+            case "orange": return "#FFA500";
+            case "green": return "#008000";
+            default: return "#000000";
+        }
+    }
+
+    private void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(TK3FunProgrammingGUI::new);
+    }
+}
